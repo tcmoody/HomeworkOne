@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">HomeworkOne</string>
+    <string name="action_settings">Settings</string>
+    <string name="calendar_hint">Input your notes here</string>
+    <string name="save_button_text">Save</string>
+    <string-array name="days_of_the_week">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+</resources>
