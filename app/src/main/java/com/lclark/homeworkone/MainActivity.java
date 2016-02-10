@@ -4,17 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class MainActivity extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextView.OnEditorActionListener {
 
-    private EditText notesForTheDay;
+    private EditText notesForTheDayEditText;
     private SharedPreferences savedNotes;
     private SharedPreferences.Editor savedNotesEditor;
     private ArrayAdapter<CharSequence> daysOfTheWeekAdapter;
@@ -35,7 +38,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
         setContentView(R.layout.activity_main);
 
         daysOfTheWeek = (Spinner) findViewById(R.id.days_of_the_week_spinner);
-        notesForTheDay = (EditText) findViewById(R.id._edit_text_calendar);
+        notesForTheDayEditText = (EditText) findViewById(R.id._edit_text_calendar);
 
         //adapter and spinner stuff
         daysOfTheWeekAdapter = ArrayAdapter.createFromResource(this,
@@ -48,7 +51,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
         leftButton = (Button) findViewById(R.id.left_button);
         saveButton = (Button) findViewById(R.id.save_button);
         rightButton = (Button) findViewById(R.id.right_button);
-
         leftButton.setOnClickListener(this);
         saveButton.setOnClickListener(this);
         rightButton.setOnClickListener(this);
@@ -57,13 +59,15 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
         days = getResources().getStringArray(R.array.days_of_the_week);
         leftButton.setText(days[6]);
         rightButton.setText(days[1]);
-
         previousDayOfTheWeek=6;
         nextDayOfTheWeek=1;
 
         //edittext stuff
         savedNotes = getPreferences(Context.MODE_PRIVATE);
         savedNotesEditor = savedNotes.edit();
+
+        //keyboard stuff
+        notesForTheDayEditText.setOnEditorActionListener(this);
      }
 
     @Override
@@ -97,7 +101,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
             leftButton.setText(days[previousDayOfTheWeek]);
             rightButton.setText(days[nextDayOfTheWeek]);
             daysOfTheWeek.setSelection(whichDayOfTheWeek);
-            notesForTheDay.setText(savedNotes.getString(days[whichDayOfTheWeek], ""));
+            notesForTheDayEditText.setText(savedNotes.getString(days[whichDayOfTheWeek], ""));
 
         //right button hit
         }else if(view.getId() == R.id.right_button){
@@ -125,11 +129,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
             leftButton.setText(days[previousDayOfTheWeek]);
             rightButton.setText(days[nextDayOfTheWeek]);
             daysOfTheWeek.setSelection(whichDayOfTheWeek);
-            notesForTheDay.setText(savedNotes.getString(days[whichDayOfTheWeek], ""));
+            notesForTheDayEditText.setText(savedNotes.getString(days[whichDayOfTheWeek], ""));
 
         //save button hit
         }else{
-            savedNotesEditor.putString(days[whichDayOfTheWeek], notesForTheDay.getText().toString());
+            savedNotesEditor.putString(days[whichDayOfTheWeek], notesForTheDayEditText.getText().toString());
             savedNotesEditor.apply();
             Toast.makeText(this, "Notes saved!", Toast.LENGTH_SHORT).show();
         }
@@ -158,12 +162,23 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
 
         leftButton.setText(days[previousDayOfTheWeek]);
         rightButton.setText(days[nextDayOfTheWeek]);
-        notesForTheDay.setText(savedNotes.getString(days[whichDayOfTheWeek], ""));
+        notesForTheDayEditText.setText(savedNotes.getString(days[whichDayOfTheWeek], ""));
 
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    @Override
+    public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+        if(actionId == EditorInfo.IME_ACTION_DONE){
+            savedNotesEditor.putString(days[whichDayOfTheWeek], notesForTheDayEditText.getText().toString());
+            savedNotesEditor.apply();
+            Toast.makeText(this, "Notes saved!", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return false;
     }
 }

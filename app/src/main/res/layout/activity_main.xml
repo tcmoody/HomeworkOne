@@ -56,7 +56,8 @@
         android:layout_marginBottom="12dp"
         android:inputType="textAutoComplete|textCapSentences|"
         android:gravity="center"
-        android:hint="@string/calendar_hint"/>
+        android:hint="@string/calendar_hint"
+        android:imeOptions="actionDone"/>
 
 
 </RelativeLayout>
